@@ -1,0 +1,46 @@
+# Variáveis de configuração
+$AppName = "databricks-engenharia"
+$TenantId = "<SEU_TENANT_ID>"
+$SubscriptionId = "<SEU_SUBSCRIPTION_ID>"
+$ResourceGroup = "<SEU_RESOURCE_GROUP>"
+$StorageAccount = "<NOME_DO_SEU_DATA_LAKE>"
+
+# Conectar ao Azure
+az login
+
+# Definir a assinatura padrão
+az account set --subscription $SubscriptionId
+
+# Criar o registro de aplicativo no Azure AD
+$app = az ad app create --display-name $AppName --query "{appId: appId, objectId: id}" --output json | ConvertFrom-Json
+
+# Capturar IDs gerados
+$AppId = $app.appId
+$ObjectId = $app.objectId
+
+Write-Output "Registro de Aplicativo criado com sucesso!"
+Write-Output "ID do Aplicativo (Cliente): $AppId"
+
+# Criar credenciais de cliente (Segredo do Aplicativo)
+$Secret = az ad app credential reset --id $AppId --credential-description "databricks-secret" --query "password" --output tsv
+
+Write-Output "Segredo do Cliente gerado: $Secret"
+
+# Criar o principal de serviço para permitir a autenticação
+$ServicePrincipal = az ad sp create --id $AppId
+Write-Output "Principal de Serviço criado!"
+
+# Atribuir permissões ao Data Lake
+$StorageId = az storage account show --name $StorageAccount --resource-group $ResourceGroup --query "id" --output tsv
+
+az role assignment create --assignee $AppId --role "Storage Blob Data Contributor" --scope $StorageId
+
+Write-Output "Permissões concedidas ao Data Lake!"
+
+# Exibir IDs principais para salvar
+Write-Output "Salve essas informações para conexão no Databricks:"
+Write-Output "-----------------------------------------------"
+Write-Output "ID do Aplicativo (Cliente): $AppId"
+Write-Output "ID do Diretório (Locatário): $TenantId"
+Write-Output "Segredo do Cliente: $Secret"
+Write-Output "-----------------------------------------------"
