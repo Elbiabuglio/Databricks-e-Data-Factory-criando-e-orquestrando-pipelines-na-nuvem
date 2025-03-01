@@ -1,0 +1,29 @@
+# 1. Variáveis de Configuração
+resource_group="raw _resource_group"  # Substitua com o nome do seu grupo de recursos
+storage_account="data_lake"       # Substitua com o nome da sua conta de armazenamento
+container_name="imoveis"              # Nome do contêiner onde as permissões serão atribuídas
+app_id="databricks-engenharia"             # O nome do registro do aplicativo Databricks
+role="Storage Blob Data Contributor"  # Função de acesso para leitura, escrita e deleção de arquivos
+
+# 2. Conceder Permissões de IAM para o Registro de Aplicativo
+echo "Concedendo permissões IAM para o aplicativo ${app_id}..."
+
+# Conceder a função "Storage Blob Data Contributor" ao registro de aplicativo
+az role assignment create --assignee $app_id \
+                          --role "$role" \
+                          --scope "/subscriptions/{subscriptionId}/resourceGroups/$resource_group/providers/Microsoft.Storage/storageAccounts/$storage_account/blobServices/default/containers/$container_name"
+
+echo "Permissões IAM concedidas com sucesso!"
+
+# 3. Configuração de ACL para o Contêiner
+echo "Configurando ACL para o contêiner ${container_name}..."
+
+# Conceder permissões de leitura, gravação e execução usando ACL para o registro de aplicativo
+az storage container set-permission --account-name $storage_account \
+                                     --name $container_name \
+                                     --acl "user=$app_id:rwx"
+
+echo "ACL configurada com sucesso!"
+
+# 4. Confirmar Conclusão
+echo "Permissões e ACLs configuradas com sucesso para o contêiner ${container_name}!"
