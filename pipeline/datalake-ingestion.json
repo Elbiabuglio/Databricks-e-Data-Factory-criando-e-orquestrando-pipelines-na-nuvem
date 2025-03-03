@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.DataFactory/schemas/2018-06-01/pipeline.json",
+    "name": "datalake-ingestion",
+    "properties": {
+        "activities": [
+            {
+                "name": "CopyDataToDataLake",
+                "type": "Copy",
+                "inputs": [
+                    {
+                        "referenceName": "Dataset_Source",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Dataset_DataLake",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "linkedServiceName": {
+                    "referenceName": "LinkedService_GitHub",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "annotations": []
+    }
+}
