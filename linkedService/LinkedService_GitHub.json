@@ -1,0 +1,11 @@
+{
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.DataFactory/schemas/2018-06-01/linkedService.json",
+    "name": "LinkedService_GitHub",
+    "properties": {
+        "type": "AzureBlobStorage",
+        "typeProperties": {
+            "connectionString": "@Microsoft.KeyVault(SecretName=\"StorageConnectionString\")"
+        },
+        "annotations": []
+    }
+}
