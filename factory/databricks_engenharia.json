@@ -1,5 +1,5 @@
 {
-    "name": "databricks_engenharia",
+    "name": "databricks-engenharia",
     "location": "eastus2",
     "identity":{
         "type": "SystemAssigned",
