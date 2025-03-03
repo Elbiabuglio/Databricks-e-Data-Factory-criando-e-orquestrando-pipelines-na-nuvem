@@ -11,7 +11,7 @@ Este projeto tem como objetivo demonstrar como construir um pipeline de engenhar
 
 * Azure Data Lake Storage Gen 2: Para armazenamento e estruturação dos dados.
 
-* Azure Databri****cks: Para processamento e transformação dos dados.
+* Azure Databricks: Para processamento e transformação dos dados.
 
 * Scala: Linguagem utilizada para desenvolver os notebooks no Databricks.
 
